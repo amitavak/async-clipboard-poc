@@ -15,33 +15,37 @@
     <!-- Create two button "Copy and "Paste" -->
     <div>
       <p>
-        <span style="font-weight: bold; font-size: 20px"
+        <span class="main-title"
           >Use keyboard shortcut or button click to use AsyncClipboard API</span
         >
         <br />
-        <b>Copy:</b> Ctrl + C <br />
-        <b>Paste:</b> Ctrl + V
+        <span class="instruction-text">Copy:</span> Ctrl + C <br />
+        <span class="instruction-text">Paste:</span> Ctrl + V
       </p>
     </div>
-    <div style="margin: 8px">
-      <button id="copy-btn">Copy</button>
-      <button id="paste-btn">Paste</button>
-      <button id="clear-btn">Clear</button>
+    <div class="button-container">
+      <button id="copy-btn" class="btn">Copy</button>
+      <button id="paste-btn" class="btn">Paste</button>
+      <button id="clear-btn" class="btn">Clear</button>
     </div>
-    <div style="margin-top: 16px">
-      <span style="font-weight: bold; font-size: 16px">Log Output</span>
+    <div class="log-container">
+      <span class="log-label">Log Output</span>
+      <br />
+      <textarea
+        disabled
+        id="log-output"
+        class="log-output"
+        placeholder="Log output will be displayed here"
+      ></textarea>
     </div>
-    <textarea
-      disabled
-      id="log-output"
-      style="height: 200px; width: 400px"
-      placeholder="Log output will be displayed here"
-    ></textarea>
-    <div>
-      <table id="clipboard-formats" style="width: 100%">
-        <tr>
-          <th style="text-align: left">Clipboard format</th>
-          <th style="text-align: left">Payload</th>
+    <div id="clipboard-formats-container" class="clipboard-formats-container">
+      <span class="clipboard-formats-label"
+        >Clipboard Formats (will populate on paste)</span
+      >
+      <table id="clipboard-formats" class="clipboard-formats-table">
+        <tr class="clipboard-formats-header">
+          <th class="clipboard-format-type-header">Clipboard Format</th>
+          <th>Payload</th>
         </tr>
       </table>
     </div>

@@ -15,16 +15,6 @@ const logOutputElm = document.getElementById("log-output");
 // Get references to the DOM elements with id "clear-btn"
 const clearBtn = document.getElementById("clear-btn");
 
-// Get references to the DOM elements with id "clear-btn"
-const clipboardTextPayloadElm = document.getElementById(
-  "clipboard-text-payload"
-);
-
-// Get references to the DOM elements with id "clear-btn"
-const clipboardHtmlPayloadElm = document.getElementById(
-  "clipboard-html-payload"
-);
-
 let copyTextPayload = ""; //"1".repeat(10 * 1024 * 1024);
 let copyHtmlPayload = "";
 let copyShadowWorkbookPayload = null;
@@ -83,13 +73,6 @@ document.addEventListener("copy", function (e) {
 
 document.addEventListener("paste", function (e) {
   console.log("AsyncClipboardAPI | Paste event detected!");
-  //const t0 = performance.now();
-  //const clipboardTextData = e.clipboardData.getData("text/plain");
-  //const clipboardHtmlData = e.clipboardData.getData("text/html");
-  //const t1 = performance.now();
-  //logMessage(`Paste successfull. Time: ${t1 - t0} ms`);
-  //clipboardTextPayloadElm.innerText = clipboardTextData;
-  //clipboardHtmlPayloadElm.innerText = clipboardHtmlData;
   pasteFromClipboard();
   e.preventDefault();
 });
@@ -106,8 +89,10 @@ clearBtn.addEventListener("click", clearClipboard);
 function clearClipboard() {
   logMessage("Clearing clipboard!");
   logOutputElm.value = "";
-  clipboardTextPayloadElm.innerText = "No text content pasted";
-  clipboardHtmlPayloadElm.innerText = "No html content pasted";
+
+  // Clear and hide the clipboard formats table
+  clearClipboardFormatsTable();
+
   navigator.clipboard
     .writeText("")
     .then(() => {
@@ -164,36 +149,89 @@ function pasteFromClipboard() {
       logMessage(`Read successfull from clipboard. Time: , ${t1 - t0}ms`);
 
       let clipboardDataPromises = [];
+      let mimeTypes = [];
 
       for (const clipboardItem of clipboardItems) {
-        if (clipboardItem.types?.includes("text/plain")) {
-          clipboardDataPromises.push(clipboardItem.getType("text/plain"));
-        }
-        if (clipboardItem.types?.includes("text/html")) {
-          clipboardDataPromises.push(clipboardItem.getType("text/html"));
+        // Get all available types from clipboard
+        for (const type of clipboardItem.types) {
+          clipboardDataPromises.push(clipboardItem.getType(type));
+          mimeTypes.push(type);
         }
       }
 
-      return Promise.all(clipboardDataPromises).then((clipboardDataBlobs) => {
-        return clipboardDataBlobs.map((x) => x.text());
-      });
-    })
-    .then((clipboardDataPromises) => {
-      Promise.all(clipboardDataPromises).then((clipboardData) => {
-        const t2 = performance.now();
-        logMessage(`Async paste successfull. Time: ${t2 - t0} ms`);
-        clipboardTextPayloadElm.innerText = clipboardData[0];
-        clipboardHtmlPayloadElm.innerText = clipboardData[1];
-      });
+      if (clipboardDataPromises.length === 0) {
+        // No clipboard data available
+        clearClipboardFormatsTable();
+        return;
+      }
+
+      return Promise.all(clipboardDataPromises)
+        .then((clipboardDataBlobs) => {
+          return Promise.all(clipboardDataBlobs.map((blob) => blob.text()));
+        })
+        .then((clipboardData) => {
+          const t2 = performance.now();
+          logMessage(`Async paste successfull. Time: ${t2 - t0} ms`);
+
+          // Populate the clipboard formats table
+          populateClipboardFormatsTable(mimeTypes, clipboardData);
+        });
     })
     .catch((err) => {
       logMessage("Failed to paste from clipboard!");
+      clearClipboardFormatsTable();
     });
 }
 
 function logMessage(message) {
   logOutputElm.value += `${message}\n---------\n`;
   logOutputElm.scrollTop = logOutputElm.scrollHeight;
+}
+
+function populateClipboardFormatsTable(mimeTypes, clipboardData) {
+  const table = document.getElementById("clipboard-formats");
+
+  // Clear existing rows except header
+  const existingRows = table.querySelectorAll("tr:not(:first-child)");
+  existingRows.forEach((row) => row.remove());
+
+  // Add rows for each clipboard format
+  for (let i = 0; i < mimeTypes.length; i++) {
+    const row = table.insertRow();
+    row.className = "clipboard-format-row";
+
+    // First column: MIME type
+    const mimeTypeCell = row.insertCell(0);
+    mimeTypeCell.className = "clipboard-format-type";
+    mimeTypeCell.textContent = mimeTypes[i];
+
+    // Second column: Data in textarea
+    const dataCell = row.insertCell(1);
+    dataCell.className = "clipboard-format-data";
+
+    const textarea = document.createElement("textarea");
+    textarea.value = clipboardData[i];
+    textarea.disabled = true;
+    dataCell.appendChild(textarea);
+  }
+
+  // Show the table if there are formats
+  if (mimeTypes.length > 0) {
+    table.classList.add("visible");
+  } else {
+    table.classList.remove("visible");
+  }
+}
+
+function clearClipboardFormatsTable() {
+  const table = document.getElementById("clipboard-formats");
+
+  // Clear existing rows except header
+  const existingRows = table.querySelectorAll("tr:not(:first-child)");
+  existingRows.forEach((row) => row.remove());
+
+  // Hide the table
+  table.classList.remove("visible");
 }
 
 checkClipboardPermission();
