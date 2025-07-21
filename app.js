@@ -27,12 +27,20 @@ const clipboardHtmlPayloadElm = document.getElementById(
 
 let copyTextPayload = ""; //"1".repeat(10 * 1024 * 1024);
 let copyHtmlPayload = "";
+let copyShadowWorkbookPayload = null;
 
 // Read a text file from the server
 fetch("copy-txt-payload.txt").then((response) => {
   response.text().then((text) => {
     logMessage("Copy text payload loaded!");
     copyTextPayload = text;
+  });
+});
+
+fetch("copy-shadow-workbook-payload.json").then((response) => {
+  response.text().then((text) => {
+    logMessage("Copy shadow workbook payload loaded!");
+    copyShadowWorkbookPayload = text;
   });
 });
 
@@ -64,11 +72,12 @@ function checkClipboardPermission() {
 
 document.addEventListener("copy", function (e) {
   console.log("AsyncClipboardAPI | Copy event detected!");
-  const t0 = performance.now();
-  e.clipboardData.setData("text/plain", copyTextPayload); //
-  e.clipboardData.setData("text/html", copyHtmlPayload); //copyHtmlPayload
-  const t1 = performance.now();
-  logMessage(`Copy successfull. Time: ${t1 - t0} ms`);
+  //const t0 = performance.now();
+  //e.clipboardData.setData("text/plain", copyTextPayload); //
+  // e.clipboardData.setData("text/html", copyHtmlPayload); //copyHtmlPayload
+  //const t1 = performance.now();
+  //logMessage(`Copy successfull. Time: ${t1 - t0} ms`);
+  copyToClipboard();
   e.preventDefault();
 });
 
@@ -124,6 +133,9 @@ function copyToClipboard() {
       new ClipboardItem({
         "text/plain": new Blob([copyTextPayload], { type: "text/plain" }), //copyTextPayload
         "text/html": new Blob([copyHtmlPayload], { type: "text/html" }), //copyHtmlPayload
+        "web data/shadow-workbook": new Blob([copyShadowWorkbookPayload], {
+          type: "web data/shadow-workbook",
+        }), //copyShadowWorkbookPayload
       }),
     ])
     .then(() => {
