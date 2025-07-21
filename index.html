@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="clipboard-icon.svg" />
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="style.css" />
     <title>Async Clipboard POC</title>
@@ -37,18 +38,10 @@
       placeholder="Log output will be displayed here"
     ></textarea>
     <div>
-      <table style="width: 100%">
+      <table id="clipboard-formats" style="width: 100%">
         <tr>
-          <th style="text-align: left">Text Payload (Paste to populate)</th>
-          <th style="text-align: left">Html Payload (Paste to populate)</th>
-        </tr>
-        <tr>
-          <td style="vertical-align: top">
-            <span id="clipboard-text-payload">No text content pasted</span>
-          </td>
-          <td style="vertical-align: top">
-            <span id="clipboard-html-payload">No html content pasted</span>
-          </td>
+          <th style="text-align: left">Clipboard format</th>
+          <th style="text-align: left">Payload</th>
         </tr>
       </table>
     </div>
