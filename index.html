@@ -3,9 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
     <title>Async Clipboard POC</title>
+    <!-- import the webpage's javascript file -->
+    <script src="/app.js" defer></script>
   </head>
   <body>
-    <h1>Test File Updated 3</h1>
+    <!-- this is the start of content -->
+    <!-- Create two button "Copy and "Paste" -->
+    <div>
+      <p>
+        <span style="font-weight: bold; font-size: 20px"
+          >Use keyboard shortcut or button click to use AsyncClipboard API</span
+        >
+        <br />
+        <b>Copy:</b> Ctrl + C <br />
+        <b>Paste:</b> Ctrl + V
+      </p>
+    </div>
+    <div style="margin: 8px">
+      <button id="copy-btn">Copy</button>
+      <button id="paste-btn">Paste</button>
+      <button id="clear-btn">Clear</button>
+    </div>
+    <div style="margin-top: 16px">
+      <span style="font-weight: bold; font-size: 16px">Log Output</span>
+    </div>
+    <textarea
+      disabled
+      id="log-output"
+      style="height: 200px; width: 400px"
+      placeholder="Log output will be displayed here"
+    ></textarea>
+    <div>
+      <table style="width: 100%">
+        <tr>
+          <th style="text-align: left">Text Payload (Paste to populate)</th>
+          <th style="text-align: left">Html Payload (Paste to populate)</th>
+        </tr>
+        <tr>
+          <td style="vertical-align: top">
+            <span id="clipboard-text-payload">No text content pasted</span>
+          </td>
+          <td style="vertical-align: top">
+            <span id="clipboard-html-payload">No html content pasted</span>
+          </td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>
