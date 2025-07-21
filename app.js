@@ -167,7 +167,23 @@ function pasteFromClipboard() {
 
       return Promise.all(clipboardDataPromises)
         .then((clipboardDataBlobs) => {
-          return Promise.all(clipboardDataBlobs.map((blob) => blob.text()));
+          // Process each blob based on its MIME type
+          return Promise.all(
+            clipboardDataBlobs.map((blob, index) => {
+              const mimeType = mimeTypes[index];
+              if (mimeType === "image/png") {
+                // For images, return the blob as a data URL
+                return new Promise((resolve) => {
+                  const reader = new FileReader();
+                  reader.onload = () => resolve(reader.result);
+                  reader.readAsDataURL(blob);
+                });
+              } else {
+                // For text-based formats, convert to text
+                return blob.text();
+              }
+            })
+          );
         })
         .then((clipboardData) => {
           const t2 = performance.now();
@@ -205,14 +221,24 @@ function populateClipboardFormatsTable(mimeTypes, clipboardData) {
     mimeTypeCell.className = "clipboard-format-type";
     mimeTypeCell.textContent = mimeTypes[i];
 
-    // Second column: Data in textarea
+    // Second column: Data in textarea or image
     const dataCell = row.insertCell(1);
     dataCell.className = "clipboard-format-data";
 
-    const textarea = document.createElement("textarea");
-    textarea.value = clipboardData[i];
-    textarea.disabled = true;
-    dataCell.appendChild(textarea);
+    if (mimeTypes[i] === "image/png") {
+      // For images, create an img element
+      const img = document.createElement("img");
+      img.src = clipboardData[i]; // clipboardData[i] should be a data URL
+      img.className = "clipboard-image";
+      img.alt = "Clipboard image";
+      dataCell.appendChild(img);
+    } else {
+      // For text data, create a textarea
+      const textarea = document.createElement("textarea");
+      textarea.value = clipboardData[i];
+      textarea.disabled = true;
+      dataCell.appendChild(textarea);
+    }
   }
 
   // Show the table if there are formats

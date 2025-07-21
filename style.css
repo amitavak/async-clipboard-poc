@@ -83,6 +83,12 @@ video {
   padding: 4px;
 }
 
+.clipboard-format-data .clipboard-image {
+  max-width: 300px;
+  max-height: 200px;
+  border: 1px solid #ddd;
+}
+
 /* Button styles */
 .button-container {
   margin: 8px;
