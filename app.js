@@ -44,10 +44,10 @@ fetch("copy-html-payload.txt").then((response) => {
 // Clipboard change event listener
 if ("clipboard" in navigator && "addEventListener" in navigator.clipboard) {
   navigator.clipboard.addEventListener("clipboardchange", (event) => {
+    logMessage("Clipboard content changed!");
+
     // The event.types property contains an array of MIME types
-    logMessage(
-      `Clipboard content changed! Available MIME types: ${event.types}`
-    );
+    logMessage(`Available MIME types: ${event.types}`);
   });
 } else {
   logMessage("The clipboardchange event is not supported in this browser.");
