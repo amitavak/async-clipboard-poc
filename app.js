@@ -111,7 +111,7 @@ function clearClipboard() {
       logMessage("Clipboard cleared!");
     })
     .catch((err) => {
-      logMessage("Failed to clear clipboard!");
+      logMessage(`Failed to clear clipboard. Error: ${err}`);
     });
 }
 
@@ -140,7 +140,7 @@ function copyToClipboard() {
       logMessage(`Async Copy successfull. Time: ${t1 - t0} ms`);
     })
     .catch((err) => {
-      logMessage("Failed to copy to clipboard!");
+      logMessage(`Failed to copy to clipboard. Error: ${err}`);
     });
 }
 
@@ -206,7 +206,7 @@ function pasteFromClipboard() {
         });
     })
     .catch((err) => {
-      logMessage("Failed to paste from clipboard!");
+      logMessage(`Failed to paste from clipboard. Error: ${err}`);
       clearClipboardFormatsTable();
     });
 }
