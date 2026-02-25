@@ -46,7 +46,7 @@ if ("clipboard" in navigator && "addEventListener" in navigator.clipboard) {
   navigator.clipboard.addEventListener("clipboardchange", (event) => {
     // The event.types property contains an array of MIME types
     logMessage(
-      `Clipboard content changed! Available MIME types: ${event.types}`
+      `Clipboard content changed! Available MIME types: ${event.types}`,
     );
   });
 } else {
@@ -62,9 +62,7 @@ function checkClipboardPermission() {
       })
       .catch((err) => {
         logMessage(
-          `Failed to query the clipboard permission state. Error: ${JSON.stringify(
-            err
-          )}`
+          `Failed to query the clipboard permission state. Error: ${err}`,
         );
       });
   } else {
@@ -194,7 +192,7 @@ function pasteFromClipboard() {
                 // For text-based formats, convert to text
                 return blob.text();
               }
-            })
+            }),
           );
         })
         .then((clipboardData) => {
